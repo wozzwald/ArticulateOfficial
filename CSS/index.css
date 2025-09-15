@@ -1,0 +1,174 @@
+/* CSS for the home page of the website */
+
+/* WELCOME SECTION */
+/* This code styles the websites mission statement and user sign in buttons */
+.gradientBox {
+  width: 100%;
+  padding-top: 15vh;
+  padding-bottom: 1vh;
+    background: linear-gradient(to right, rgb(194, 170, 255), rgb(246, 233, 233));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column; /* stack children vertically */
+  align-items: center;
+}
+
+#WelcomeLogo {
+  width: 17vw;
+  height: 27vh;
+}
+
+#bigTitle {
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+  font-size: 5.5vw;
+  color: rgb(113, 98, 253);
+  font-weight: bold;
+}
+
+#descrip {
+  box-sizing: border-box;
+  flex-direction: row;
+  display: flex;
+}
+
+#descripWrite{
+  margin-top: 6vh;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 1.5vw;
+  max-width: 45vw; /* or whatever width looks best for your design */
+  text-align: center;
+  font-weight: lighter;
+  margin-left: 1vw;
+}
+
+#descripWrite ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+#descripWrite li {
+  font-family: Helvetica, Arial, sans-serif;
+  margin-bottom: 1vh;
+}
+
+#loginButtons {
+  margin-top: 5vh;
+  margin-left: 28vw;
+  display: flex;
+  gap: 4vw; /* increased from 2vw to 4vw */
+}
+
+#loginButtons a {
+  background-color: rgb(113, 98, 253);
+  color: white;
+  font-size: 1vw;
+  padding: .5vw 3vw;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 550;
+  margin-top: -10vh;
+  margin-bottom: 10vh;
+  margin-left: -5vw;
+  margin-right: 5vw;;
+}
+
+#loginButtons a:hover {
+  background-color: #a499e3;
+  color:rgb(255, 255, 255);
+}
+
+#descrip img {
+  border: 3px solid black;
+  border-radius: 5px;
+  margin-right: 50px;
+}
+
+
+/* GALLERY SECTION */
+/* This code styles the gallery section of the website */
+#gallery{
+  margin-top: 5vh;
+  display:flex;
+  flex-direction: row;
+  justify-content: center; 
+  align-items: flex-start; 
+  height: auto; 
+  background-color: rgb(247, 255, 250);
+  padding-bottom: 3.5vh;
+  margin-bottom: 8vh;
+}
+
+#prevButton {
+  font-size: 1vw;
+  margin-right: -2vw;
+  margin-top: 20vh;
+  z-index: 1;
+}
+
+#nextButton {
+  font-size: 1vw;
+  margin-left: -2vw;
+  margin-top: 20vh;
+}
+
+#gallery ul {
+  list-style-type: none;
+  padding: 0;
+  margin-right: 10vw;
+}
+
+#gallery li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2vh;
+}
+
+#galleryTitle{
+  font-size: 6.5vw;
+  color:rgb(113, 98, 253);
+  margin-top: 6vh;
+}
+
+#galleryImage {
+  margin-top: 4vh;
+  width: 30vw;
+  height: 35vh;
+  border: 3px solid black;
+  border-radius: 10px;
+}
+
+#seeGallery {
+  margin-top: 30px;
+  margin-bottom: 70px;
+}
+
+#seeGallery a{
+  background-color: rgb(113, 97, 255);
+  color: white;
+  font-size: 1.3vw;
+  padding: 1.5vh 5vw;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 550;
+  font-family: arial;
+  font-weight: bold;  
+  font-family: fantasy, Papyrus;
+}
+
+#seeGallery a:hover {
+  background-color: #a499e3;
+  color:rgb(255, 255, 255);
+}
+
+/* Footer Section*/
+/* This code styles the footer section of the website */
+footer {
+  background: rgb(194, 170, 255);
+  color: black;
+  text-align: center;
+  padding: 0.5vw 0;
+  position: relative;
+  width: 100%;
+}

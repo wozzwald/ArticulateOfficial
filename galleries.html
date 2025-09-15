@@ -1,0 +1,232 @@
+<!-- Gallery Page -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href= "CSS/index.css">
+    <link rel="icon" href="images/articulate logo_Original.jpg" type="image/png">
+    <link rel="stylesheet" href="CSS/resource.css">
+    <title>Gallery Page 🖼️</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+</head>
+
+<body>
+  <h1>Upload Image & Browse Folder</h1>
+
+  <form id="uploadForm">
+    <label for="imageName">Image Name:</label><br>
+    <input type="text" id="imageName" name="imageName" placeholder="Title (optional)" /><br><br>
+
+    <label for="imageFile">Select Image:</label><br>
+    <input type="file" id="imageFile" name="imageFile" accept="image/*" required /><br><br>
+
+    <button type="submit">Upload Image</button>
+    <span class="refresh" title="Refresh gallery" onclick="listFolderFiles()">🔄</span>
+  </form>
+
+  <div id="status"></div>
+
+  <h2>Recent Uploads</h2>
+  <div id="gallery" class="gallery">
+    <!-- dynamic file cards go here -->
+  </div>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+    listPublicFolderFiles();
+    });
+
+    // === CONFIG ===
+    const CLIENT_ID = "DONT SHOW"; // replace with your OAuth Web app client ID
+    const TARGET_FOLDER_ID = "DONT SHOW"; // replace with the Drive folder ID
+
+    let accessToken = null;
+    let tokenClient;
+    let pendingUpload = null;
+
+    function showStatus(msg, isError = false) {
+      const d = document.getElementById("status");
+      d.textContent = msg;
+      d.style.color = isError ? "crimson" : "green";
+    }
+
+    function initTokenClient() {
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: 'https://www.googleapis.com/auth/drive.file',
+        callback: (resp) => {
+          if (resp.error) {
+            showStatus("Auth error: " + resp.error, true);
+            return;
+          }
+          accessToken = resp.access_token;
+          if (pendingUpload) {
+            const { file, name } = pendingUpload;
+            pendingUpload = null;
+            doUpload(file, name);
+          } else {
+            listFolderFiles();
+          }
+        },
+      });
+    }
+
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById("imageName").value.trim();
+      const fileInput = document.getElementById("imageFile");
+      if (!fileInput.files || fileInput.files.length === 0) {
+        showStatus("Select a file first.", true);
+        return;
+      }
+      const file = fileInput.files[0];
+      const effectiveName = nameInput || file.name;
+
+      if (!accessToken) {
+        pendingUpload = { file, name: effectiveName };
+        tokenClient.requestAccessToken();
+      } else {
+        doUpload(file, effectiveName);
+      }
+    });
+
+    async function doUpload(file, displayName) {
+      showStatus("Uploading...");
+
+      const metadata = {
+        name: displayName,
+        mimeType: file.type,
+        parents: [TARGET_FOLDER_ID],
+      };
+
+      // multipart upload
+      const boundary = "-------314159265358979323846";
+      const delimiter = "\r\n--" + boundary + "\r\n";
+      const closeDelim = "\r\n--" + boundary + "--";
+
+      const reader = new FileReader();
+      reader.onload = async function () {
+        const base64Data = reader.result.split(",")[1];
+        const multipartRequestBody =
+          delimiter +
+          'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+          JSON.stringify(metadata) +
+          delimiter +
+          `Content-Type: ${file.type}\r\n` +
+          "Content-Transfer-Encoding: base64\r\n" +
+          "\r\n" +
+          base64Data +
+          closeDelim;
+
+        try {
+          const resp = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + accessToken,
+              "Content-Type": "multipart/related; boundary=" + boundary,
+            },
+            body: multipartRequestBody,
+          });
+
+          if (resp.ok) {
+            const result = await resp.json();
+            showStatus(`✅ Uploaded "${result.name}". File ID: ${result.id}`);
+            // Refresh gallery after a short delay to allow Drive to index
+            setTimeout(() => listFolderFiles(), 800);
+          } else {
+            const errText = await resp.text();
+            showStatus(`Upload failed: ${resp.status} ${errText}`, true);
+          }
+        } catch (err) {
+          showStatus("Upload error: " + err.message, true);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function listFolderFiles() {
+      if (!accessToken) {
+        tokenClient.requestAccessToken();
+        return;
+      }
+      showStatus("Loading gallery...");
+
+      // Query to list files in folder, newest first
+      const q = `'${TARGET_FOLDER_ID}' in parents and trashed = false`;
+      const params = new URLSearchParams({
+        orderBy: 'createdTime desc',
+        pageSize: '20',
+        q: q,
+        fields: 'files(id,name,thumbnailLink,iconLink,mimeType,createdTime,webViewLink)',
+      });
+
+      try {
+        const resp = await fetch(`https://www.googleapis.com/drive/v3/files?${params.toString()}`, {
+          headers: {
+            Authorization: "Bearer " + accessToken,
+          },
+        });
+        if (!resp.ok) {
+          const text = await resp.text();
+          showStatus(`Failed to list: ${resp.status} ${text}`, true);
+          return;
+        }
+        const data = await resp.json();
+        renderGallery(data.files || []);
+        showStatus("Gallery updated.");
+      } catch (e) {
+        showStatus("Gallery error: " + e.message, true);
+      }
+    }
+
+    function renderGallery(files) {
+      const gallery = document.getElementById("gallery");
+      gallery.innerHTML = "";
+      if (files.length === 0) {
+        gallery.textContent = "No files in folder yet.";
+        return;
+      }
+      for (const f of files) {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        // Thumbnail if image, otherwise icon
+        const img = document.createElement("img");
+        if (f.thumbnailLink) {
+          img.src = f.thumbnailLink;
+        } else {
+          img.src = f.iconLink; // generic icon
+        }
+        img.alt = f.name;
+        card.appendChild(img);
+
+        const title = document.createElement("div");
+        title.textContent = f.name;
+        title.style.fontWeight = "600";
+        title.style.marginTop = "4px";
+        title.style.overflow = "hidden";
+        title.style.textOverflow = "ellipsis";
+        title.style.whiteSpace = "nowrap";
+        card.appendChild(title);
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        const dt = new Date(f.createdTime).toLocaleString();
+        meta.innerHTML = `${dt}<br/><a href="${f.webViewLink}" target="_blank" style="text-decoration:none;">View</a>`;
+        card.appendChild(meta);
+
+        gallery.appendChild(card);
+      }
+    }
+
+    window.onload = () => {
+      initTokenClient();
+    };
+  </script>
+  
+</body>
+</html>

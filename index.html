@@ -1,0 +1,86 @@
+<!-- Main Page -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href= "CSS/index.css">
+    <link rel="icon" href="images/articulate logo_Original.jpg" type="image/png">
+    <link rel="stylesheet" href="CSS/resource.css">
+    <title>ARTiculate</title>
+</head>
+
+<!-- Body Section!!!! -->
+<body>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <label class="title">ARTiculate 🎨</label>
+    <ul>
+      <li><a href="#" class="nav-button">ABOUT</a></li>
+      <li><a href="galleries.html" class="nav-button">GALLERY</a></li>
+      <li><a href="#" class="nav-button">RESOURCES</a></li>
+      <li><a href="#" class="nav-button">PROFILES</a></li>
+    </ul>
+  </nav>
+
+  <!-- This is the Welcome Section-->
+  <div class="gradientBox">
+
+    <div id = "bigTitle">Welcome to ARTiculate</div>
+
+      <!--This is the description part of the welcome section - with logo image and description-->
+      <div id="descrip">
+        <img src="images/articulate logo_Original.jpg" alt="articulate logo" id = "WelcomeLogo">
+        <div id = "descripWrite">
+          ARTiculate is a <strong>safe</strong> and <strong>inclusive platform</strong> that aims to bridge language and speech barriers through 
+          <strong>visual art</strong>. Users can <i>share</i> their art, <i>explore</i> others' creations, and <i>access</i> 
+          resources to <strong>support themselves </strong> and <strong>others' creative expression.</strong>
+        </div>
+      </div> 
+
+    <!--This is where the sign in and sign out buttons will go-->
+    <div id = "loginButtons">
+        <a href="#">Sign up</a>
+        <a href="#">Log in</a> <!-- When we inevitable switch to php we can have this dynamically switch to log out-->
+    </div>
+
+  </div>
+
+
+  <!-- This is the Gallery Section of this page-->
+
+  <div id = "gallery">
+    <ul>
+      <li>
+        <div id = "galleryTitle">GALLERY</div>
+        <div id = "seeGallery">
+          <a href="#">SEE GALLERY</a>
+        </div>
+      </li>
+    </ul>
+
+    <button id="prevButton" onclick="changeImage(-1)">&#10094;</button>
+    <!--This will be a litterally gallery that rottates and changes source-->
+    <img src="images/image3.jpg" alt="gallery example images" id = "galleryImage">
+    <button id="nextButton" onclick="changeImage(1)">&#10095;</button>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 ARTiculate. All rights reserved.</p>
+    <p>Contact us at: <a href="mailto:articulateapphelp@gmail.com">articulateapphelp@gmail.com</a>
+    <!-- <p>Follow us on social media: 
+      <a href="#">Facebook</a> | 
+      <a href="#">Twitter</a> | 
+      <a href="#">Instagram</a>
+    </p> -->
+    <p> Founder and Creator of ARTiculate: Karanina Asuncion Hoang | Web Developers: Dathan Lang & Morwen Xu</p>
+  </footer>
+  <!-- Scripts -->
+  <script src="JavaScript/index.js"></script>
+  
+</body>
+</html>
