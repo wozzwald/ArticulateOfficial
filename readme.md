@@ -7,5 +7,3 @@ ARTiculate is a digital space where kids and young adults can share their artwor
 - Create open artistic space to allow users to make portfolios and upload their art
 - Make this semieducation ig
 
-## Information Architecture
-- *Still in Development*
