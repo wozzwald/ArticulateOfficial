@@ -5,5 +5,5 @@ ARTiculate is a digital space where kids and young adults can share their artwor
 
 ## Objectives
 - Create open artistic space to allow users to make portfolios and upload their art
-- Make this semieducation ig
-
+- Let users work together and share helpful feedback to get better at art
+- Build a friendly community where everyone’s unique ideas and styles are welcome
